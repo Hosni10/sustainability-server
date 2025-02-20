@@ -4,14 +4,17 @@ import bcrypt from 'bcrypt'
 
 
 const signup = async (req,res,next) =>{
-    const { username, email, password } = req.body;
+    const { name, email, password , confirmPassword } = req.body;
     const user = User.findOne({ email })
+    if(password !== confirmPassword) {
+        return res.status(400).json({error: "Passwords do not match"});
+    }
     if(user){
         return res.status(403).json({error: "Email already exists"});
     }
     const saltRounds = 10
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const newUser = new User({ username, email, password: hashedPassword  });
+    const newUser = new User({ name, email, password: hashedPassword  });
 
     res.status(200).json({success:"User created successfully", newUser});
 
