@@ -1,12 +1,12 @@
 import Joi from "joi";
 
 export const addInitiativeSchema = Joi.object({
-  title: Joi.string().required().min(5).max(50).messages({
+  title: Joi.string().required().min(2).max(50).messages({
     "string.empty": "Product title is required",
     "string.min": "Product title should be at least 5 characters long",
     "string.max": "Product title should not exceed 50 characters long",
   }),
-  description: Joi.string().required().min(10).max(500).messages({
+  description: Joi.string().required().min(2).max(500).messages({
     "string.empty": "Product description is required",
     "string.min": "Product description should be at least 10 characters long",
     "string.max": "Product description should not exceed 500 characters long",

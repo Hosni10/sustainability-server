@@ -11,7 +11,8 @@ import {
   addProductSchema,
   updateProductSchema,
 } from "../../validation/product.validation.js";
-import upload from "../../middleware/fileUpload.js";
+import { multerCloudFunction } from "../../services/multerCloud.js";
+import { allowedExtensions } from "../../utilities/allowedExtention.js";
 
 const productRouter = express.Router();
 
@@ -23,6 +24,6 @@ productRouter.put(
   updateProduct
 );
 productRouter.delete("/deleteproduct/:id", deleteProduct);
-productRouter.post("/addproduct", upload,validation(addProductSchema), addProduct);
+productRouter.post("/addproduct",multerCloudFunction(allowedExtensions.Image).array("images", 10),validation(addProductSchema), addProduct);
 
 export default productRouter;

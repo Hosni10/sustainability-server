@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
     unique: true,
@@ -21,6 +21,8 @@ const userSchema = mongoose.Schema({
     required: true,
     default: "customer",
   },
+  phone: { type: String },
+  address: { type: String },
   createdAt: {
     type: Date,
     default: Date.now(),
