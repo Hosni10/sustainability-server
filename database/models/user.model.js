@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema({
     required: true,
     default: "customer",
   },
+  phone: { type: String },
+  address: { type: String },
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+  bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
   createdAt: {
     type: Date,
     default: Date.now(),

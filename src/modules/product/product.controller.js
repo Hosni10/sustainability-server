@@ -1,20 +1,59 @@
 import { Product } from "../../../database/models/product.model.js";
+import imagekit, { destroyImage } from "../../utilities/imagekitConfigration.js";
+import { customAlphabet } from 'nanoid'
+
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 5)
 
 const addProduct = async (req, res, next) => {
   try {
-    const { name, price, description, category } = req.body;
-    if (!req.file) {
+    const { title, price, description, category,stock } = req.body;
+    
+    console.log(req.body);
+    // console.log(req.files);
+    
+    if (!req.files) {
       return res.status(400).json({ message: "Image is required" });
     }
-    const image = req.file.path;
-    const newProduct = new Product({
-      name,
-      price,
-      description,
-      category,
-      image,
-    });
-    await newProduct.save();
+
+    const customId = nanoid();
+    const uploadedImages = [];
+
+    for (const file of req.files) {
+      const uploadResult = await imagekit.upload({
+        file: file.buffer, 
+        fileName: file.originalname,
+        folder: `Sustainability/Product/${customId}`,
+      });
+
+      uploadedImages.push({
+        image_url: uploadResult.url,
+        image_Id: uploadResult.fileId,
+      });
+    }
+
+
+      const newProduct = new Product({
+        title,
+        price,
+        description,
+        category,
+        images:uploadedImages,
+        stock
+      });
+
+      console.log(newProduct);
+      
+      
+      if (!newProduct) {
+        for (const image of uploadedImages) {
+          await destroyImage(image.public_id);
+        }
+        return next(new Error("Failed to add the unit. Please try again later.", { cause: 400 }));
+      }
+      
+      await newProduct.save();
+
+
     res
       .status(201)
       .json({ message: "Product added successfully", product: newProduct });

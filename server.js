@@ -9,13 +9,15 @@ import dotenv from 'dotenv'
 import rateLimit from 'express-rate-limit'
 import compression from 'compression'
 import initiativeRouter from './src/modules/green-initiative/greenInitiative.router.js'
-
+import cors from 'cors'
+import path from 'path'
 
 dotenv.config()
 
 const app = express()
 const port = process.env.PORT || 5000
 dbConnection
+
 
 app.use(express.json())
 app.use(helmet())
@@ -26,6 +28,7 @@ app.use(rateLimit({
 }))
 app.use(compression())
 
+app.use(cors())
 
 app.use('/auth',authRouter)
 app.use('/product',productRouter)
